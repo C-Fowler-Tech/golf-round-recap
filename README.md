@@ -139,3 +139,25 @@ To regenerate the workbook structure from scratch (WARNING: overwrites all data)
 ```bash
 python create_workbook.py
 ```
+
+---
+
+## Status & Next Steps
+
+### What's been built
+- `Golf Round Recap.xlsx` — Rounds tab (21 columns) and Courses tab
+- Rounds tab has dropdowns for Note Type, Score, Pick Up, Sentiment, and all 7 ball striking columns
+- Courses tab pre-loaded with Pupuke Golf Club (18 holes, approximate data)
+- Sample round in the Rounds tab showing correct structure for Overall + Hole rows
+- `create_workbook.py` — regenerates the workbook structure from scratch if needed
+
+### Needs doing before first real use
+- [ ] **Update Pupuke course data** — distances and stroke index are approximate. Open the Courses tab and update from the official Pupuke scorecard or the club website
+- [ ] **Delete the sample round** — rows 2-5 in the Rounds tab are example data, clear them before entering real rounds
+- [ ] **Add other courses** — add 18 rows per course to the Courses tab as you play new venues
+
+### Ideas for later
+- **Analysis tab or separate script** — once a few rounds are in, a Python script (or Excel pivot) could surface: stroke average by hole, scoring by club off tee, putts per round trend, sentiment vs. score correlation
+- **Handicap tracking** — add a net score column or a separate tab for handicap differential history
+- **Shot tracking** — could add a fairways hit / greens in regulation column if you want more granular stats
+- **Course notes tab** — a tab for general notes per course (layout tips, local rules, favourite holes)
