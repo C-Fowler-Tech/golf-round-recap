@@ -1,8 +1,9 @@
 """
 create_workbook.py
-Generates (or regenerates) the Golf Round Recap Excel workbook.
-Run this once to create the file, or again to reset the structure.
-WARNING: running again will overwrite the file and lose any data.
+Generates (or regenerates) the Golf Round Recap Excel base template.
+Saves to repo only -- does NOT overwrite the live Google Drive file.
+To initialise a fresh Drive file manually copy the output:
+  copy "Golf Round Recap.xlsx" "G:\\My Drive\\Project_Outputs\\Golf Round Recap\\Golf Round Recap.xlsx"
 """
 
 import openpyxl
@@ -10,16 +11,9 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 from datetime import date
-import os
-import shutil
 import pathlib
 
-# Template saved to the repo for source control
-REPO_DIR      = pathlib.Path(__file__).parent
-TEMPLATE_PATH = REPO_DIR / "Golf Round Recap.xlsx"
-
-# Live working file on Google Drive
-DRIVE_PATH = pathlib.Path(r"G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx")
+TEMPLATE_PATH = pathlib.Path(__file__).parent / "Golf Round Recap.xlsx"
 
 # ── Styles ────────────────────────────────────────────────────────────────────
 HDR_FILL  = PatternFill("solid", fgColor="1F4E79")
@@ -39,34 +33,25 @@ def write_row(ws, row_num, values, fill=None):
         if fill:
             cell.fill = fill
 
+def dv(formula, sqref):
+    v = DataValidation(type="list", formula1=formula, allow_blank=True, showErrorMessage=False)
+    v.sqref = sqref
+    return v
+
 
 # ============================================================
-# TAB 1 -- ROUNDS  (24 columns)
+# TAB 1 -- ROUNDS  (29 columns)
 # ============================================================
-#  1  Date
-#  2  Course
-#  3  Note Type
-#  4  Hole
-#  5  Par
-#  6  Distance (m)
-#  7  Stroke Index        <- populated from Courses tab for the hole
-#  8  Score
-#  9  Strokes
-# 10  Putts
-# 11  Penalties
-# 12  Tee Club
-# 13  Pick Up
-# 14  Sentiment
-# 15  Driver              }
-# 16  Woods               }
-# 17  Hybrids             } Overall rows only -- ball striking ratings
-# 18  Long Irons (5-7)    }
-# 19  Short Irons (8-P)   }
-# 20  Wedges (GW/SW/LW)   }
-# 21  Putter              }
-# 22  Playing Handicap
-# 23  Tee Colour
-# 24  Notes
+#  1  Date               11  Penalties          21  Short Irons (8-P)
+#  2  Course             12  FIR                22  Wedges (GW/SW/LW)
+#  3  Note Type          13  GIR                23  Putter
+#  4  Hole               14  Tee Club           24  Playing Handicap
+#  5  Par                15  Pick Up            25  Tee Colour
+#  6  Distance (m)       16  Sentiment          26  Course Rating   } Overall
+#  7  Stroke Index       17  Driver             27  Slope           } rows
+#  8  Score              18  Woods              28  WHS Index       } only
+#  9  Strokes            19  Hybrids
+# 10  Putts              20  Long Irons (5-7)   29  Notes
 # ============================================================
 wb = openpyxl.Workbook()
 ws = wb.active
@@ -75,17 +60,21 @@ ws.title = "Rounds"
 ROUND_HEADERS = [
     "Date", "Course", "Note Type", "Hole", "Par", "Distance (m)", "Stroke Index",
     "Score", "Strokes", "Putts", "Penalties",
+    "FIR", "GIR",
     "Tee Club", "Pick Up", "Sentiment",
     "Driver", "Woods", "Hybrids", "Long Irons\n(5-7)", "Short Irons\n(8-P)", "Wedges\n(GW/SW/LW)", "Putter",
     "Playing\nHandicap", "Tee Colour",
+    "Course\nRating", "Slope", "WHS\nIndex",
     "Notes",
 ]
 ROUND_COL_WIDTHS = [
     12, 20, 12, 7, 6, 14, 13,
     16, 10, 8, 11,
+    7, 7,
     14, 10, 12,
     11, 10, 11, 13, 13, 13, 10,
     11, 12,
+    11, 9, 11,
     60,
 ]
 
@@ -96,60 +85,59 @@ for col, h in enumerate(ROUND_HEADERS, 1):
 
 ws.freeze_panes = "A2"
 
-# Data validations
-def dv(formula, sqref):
-    v = DataValidation(type="list", formula1=formula, allow_blank=True, showErrorMessage=False)
-    v.sqref = sqref
-    return v
-
-STRIKE_RATING = '"Great,Good,Average,Poor"'
+STRIKE = '"Great,Good,Average,Poor"'
 ws.add_data_validation(dv('"Overall,Hole"',                                           "C2:C9999"))
 ws.add_data_validation(dv('"Eagle,Birdie,Par,Bogey,Double Bogey,Triple Bogey,Other"', "H2:H9999"))
-ws.add_data_validation(dv('"Y,N"',                                                    "M2:M9999"))
-ws.add_data_validation(dv('"Positive,Neutral,Negative"',                              "N2:N9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "O2:O9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "P2:P9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "Q2:Q9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "R2:R9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "S2:S9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "T2:T9999"))
-ws.add_data_validation(dv(STRIKE_RATING,                                              "U2:U9999"))
-ws.add_data_validation(dv('"White,Yellow,Red,Blue,Black"',                            "W2:W9999"))
+ws.add_data_validation(dv('"Y,N"',                                                    "L2:L9999"))  # FIR
+ws.add_data_validation(dv('"Y,N"',                                                    "M2:M9999"))  # GIR
+ws.add_data_validation(dv('"Y,N"',                                                    "O2:O9999"))  # Pick Up
+ws.add_data_validation(dv('"Positive,Neutral,Negative"',                              "P2:P9999"))  # Sentiment
+ws.add_data_validation(dv(STRIKE,                                                     "Q2:Q9999"))  # Driver
+ws.add_data_validation(dv(STRIKE,                                                     "R2:R9999"))  # Woods
+ws.add_data_validation(dv(STRIKE,                                                     "S2:S9999"))  # Hybrids
+ws.add_data_validation(dv(STRIKE,                                                     "T2:T9999"))  # Long Irons
+ws.add_data_validation(dv(STRIKE,                                                     "U2:U9999"))  # Short Irons
+ws.add_data_validation(dv(STRIKE,                                                     "V2:V9999"))  # Wedges
+ws.add_data_validation(dv(STRIKE,                                                     "W2:W9999"))  # Putter
+ws.add_data_validation(dv('"White,Yellow,Red,Blue,Black"',                            "Y2:Y9999"))  # Tee Colour
 
-# ── Sample round (Pupuke, 22-Feb-2026, White tees) ───────────────────────────
+# ── Sample Overall row ────────────────────────────────────────────────────────
 write_row(ws, 2, [
     date(2026, 2, 22), "Pupuke", "Overall", 0, 70, 5188, None,
-    85, 85, 32, 2, "", "", "Positive",
-    "Good", "Average", "", "Good", "Average", "Good", "Good",
-    18, "White",
-    "Tee time 8:30am. Fine autumn morning, light wind. Course in great condition. "
-    "Happy with the round - hit it well off the tee, short game let me down on a few holes.",
+    101, 101, None, None,
+    None, None,                              # FIR, GIR -- blank on Overall
+    None, None, "Negative",                  # Tee Club, Pick Up, Sentiment
+    "Great", "Poor", "Average", "Poor", "Average", "Good", "Average",
+    None, "White",
+    68.2, 119, 24.4,
+    "Tee time 7:22am. Sample overall notes.",
 ], fill=ALT_FILL)
 
-sample_holes = [
-    [date(2026, 2, 22), "Pupuke", "Hole", 1, 4, 300,  7, "Bogey",  5, 2, 0, "Driver", "N", "Neutral",  "", "", "", "", "", "", "", "", "", "Good drive, approach came up short. Chip to 4m, two-putted."],
-    [date(2026, 2, 22), "Pupuke", "Hole", 2, 3, 139, 15, "Par",    3, 1, 0, "7 Iron", "N", "Positive", "", "", "", "", "", "", "", "", "", "Solid tee shot to 3m, holed the putt. Exactly the plan."],
-    [date(2026, 2, 22), "Pupuke", "Hole", 3, 4, 335,  3, "Birdie", 3, 1, 0, "Driver", "N", "Positive", "", "", "", "", "", "", "", "", "", "Big drive, wedge to 1.5m and holed it. Best hole of the day."],
-]
-for i, row in enumerate(sample_holes):
-    write_row(ws, 3 + i, row)
+# ── Sample Hole row ───────────────────────────────────────────────────────────
+write_row(ws, 3, [
+    date(2026, 2, 22), "Pupuke", "Hole", 4, 4, 304, 13,
+    "Par", 4, 2, None,
+    "Y", "Y",                                # FIR, GIR
+    "Driver", "N", "Positive",
+    None, None, None, None, None, None, None,
+    None, None,
+    None, None, None,                        # Course Rating, Slope, WHS -- blank on Hole rows
+    "Good drive, good PW onto green, two putt.",
+])
 
 
 # ============================================================
-# TAB 2 -- COURSES  (7 columns)
+# TAB 2 -- COURSES  (9 columns)
 # ============================================================
-#  1  Course
-#  2  Hole
-#  3  Tee Colour    <- par and distance vary by tee
-#  4  Par
-#  5  Distance (m)
-#  6  Stroke Index
-#  7  Notes
+#  1  Course       4  Par           7  Course Rating
+#  2  Hole         5  Distance (m)  8  Slope
+#  3  Tee Colour   6  Stroke Index  9  Notes
 # ============================================================
 ws_c = wb.create_sheet("Courses")
 
-COURSE_HEADERS = ["Course", "Hole", "Tee Colour", "Par", "Distance (m)", "Stroke Index", "Notes"]
-COURSE_COL_WIDTHS = [22, 7, 12, 6, 14, 14, 40]
+COURSE_HEADERS = ["Course", "Hole", "Tee Colour", "Par", "Distance (m)",
+                  "Stroke Index", "Course Rating", "Slope", "Notes"]
+COURSE_COL_WIDTHS = [22, 7, 12, 6, 14, 14, 13, 9, 40]
 
 ws_c.row_dimensions[1].height = 30
 for col, h in enumerate(COURSE_HEADERS, 1):
@@ -159,7 +147,6 @@ for col, h in enumerate(COURSE_HEADERS, 1):
 ws_c.freeze_panes = "A2"
 
 # Pupuke Golf Club -- White tees (verified)
-# Par 70, 5188m total
 PUPUKE = [
     # hole, tee,     par, dist_m, stroke_index
     ( 1, "White",  4,  300,  7),
@@ -184,16 +171,14 @@ PUPUKE = [
 
 for row_i, (hole, tee, par, dist, si) in enumerate(PUPUKE, 2):
     fill = ALT_FILL if row_i % 2 == 1 else None
-    write_row(ws_c, row_i, ["Pupuke", hole, tee, par, dist, si, ""], fill=fill)
+    write_row(ws_c, row_i, ["Pupuke", hole, tee, par, dist, si, None, None, ""], fill=fill)
 
 total_par  = sum(h[2] for h in PUPUKE)
 total_dist = sum(h[3] for h in PUPUKE)
 bold = Font(bold=True, name="Calibri")
-ws_c.cell(row=20, column=1, value="Pupuke").font = bold
-ws_c.cell(row=20, column=2, value="TOTAL").font  = bold
-ws_c.cell(row=20, column=3, value="White").font  = bold
-ws_c.cell(row=20, column=4, value=total_par).font  = bold
-ws_c.cell(row=20, column=5, value=total_dist).font = bold
+for col, val in enumerate(["Pupuke", "TOTAL", "White", total_par, total_dist, None, 68.2, 119, ""], 1):
+    cell = ws_c.cell(row=20, column=col, value=val)
+    cell.font = bold
 
 
 # ============================================================
@@ -202,23 +187,20 @@ ws_c.cell(row=20, column=5, value=total_dist).font = bold
 ws_g = wb.create_sheet("Guide")
 ws_g.sheet_view.showGridLines = False
 
-GUIDE_HDR = Font(color="FFFFFF", bold=True, name="Calibri", size=11)
-GUIDE_SEC = Font(bold=True, name="Calibri", size=12)
+SEC_FILL  = PatternFill("solid", fgColor="1F4E79")
+SUB_FILL  = PatternFill("solid", fgColor="2E75B6")
+SUB_FONT  = Font(color="FFFFFF", bold=True, name="Calibri", size=10)
 GUIDE_BODY = Font(name="Calibri", size=11)
-SEC_FILL = PatternFill("solid", fgColor="1F4E79")
-SUB_FILL = PatternFill("solid", fgColor="2E75B6")
-SUB_FONT = Font(color="FFFFFF", bold=True, name="Calibri", size=10)
 
-ws_g.column_dimensions["A"].width = 30
-ws_g.column_dimensions["B"].width = 18
-ws_g.column_dimensions["C"].width = 50
+ws_g.column_dimensions["A"].width = 32
+ws_g.column_dimensions["B"].width = 20
+ws_g.column_dimensions["C"].width = 55
 
 def guide_section(row, title):
-    cell = ws_g.cell(row=row, column=1, value=title)
-    cell.font = GUIDE_SEC
-    cell.fill = SEC_FILL
-    cell.font = Font(color="FFFFFF", bold=True, name="Calibri", size=12)
     ws_g.merge_cells(start_row=row, start_column=1, end_row=row, end_column=3)
+    cell = ws_g.cell(row=row, column=1, value=title)
+    cell.font = Font(color="FFFFFF", bold=True, name="Calibri", size=12)
+    cell.fill = SEC_FILL
     ws_g.row_dimensions[row].height = 20
 
 def guide_subhdr(row, cols):
@@ -235,70 +217,80 @@ def guide_row(row, vals):
             cell.fill = ALT_FILL
 
 r = 1
-guide_section(r, "SCORE LABELS -- use these in the Score column for Hole rows"); r += 1
+guide_section(r, "SCORE LABELS -- Score column on Hole rows"); r += 1
 guide_subhdr(r, ["Result", "Strokes vs Par", "Example (par 4)"]); r += 1
 for vals in [
-    ("Eagle",        "-2 or better", "2 strokes on a par 4"),
-    ("Birdie",       "-1",           "3 strokes on a par 4"),
-    ("Par",          "0",            "4 strokes on a par 4"),
-    ("Bogey",        "+1",           "5 strokes on a par 4"),
-    ("Double Bogey", "+2",           "6 strokes on a par 4"),
-    ("Triple Bogey", "+3",           "7 strokes on a par 4"),
-    ("Other",        "+4 or worse, or pick up", "8+ strokes, or picked up"),
+    ("Eagle",        "-2 or better",                "2 strokes on a par 4"),
+    ("Birdie",       "-1",                           "3 strokes on a par 4"),
+    ("Par",          "0",                            "4 strokes on a par 4"),
+    ("Bogey",        "+1",                           "5 strokes on a par 4"),
+    ("Double Bogey", "+2",                           "6 strokes on a par 4"),
+    ("Triple Bogey", "+3",                           "7 strokes on a par 4"),
+    ("Other",        "+4 or worse, or pick up",      "8+ strokes or picked up"),
 ]:
     guide_row(r, vals); r += 1
+
+r += 1
+guide_section(r, "FIR -- Fairway in Regulation (par 4s and 5s only, leave blank on par 3s and Overall)"); r += 1
+guide_subhdr(r, ["Value", "Meaning", ""]); r += 1
+guide_row(r, ["Y", "Tee shot landed on the fairway", ""]); r += 1
+guide_row(r, ["N", "Tee shot missed fairway (rough, bunker, OB, etc.)", ""]); r += 1
+guide_row(r, ["(blank)", "Par 3 tee shots and Overall rows", ""]); r += 1
+
+r += 1
+guide_section(r, "GIR -- Green in Regulation (all hole rows, leave blank on Overall)"); r += 1
+guide_subhdr(r, ["Value", "Meaning", "Regulation shots to green"]); r += 1
+guide_row(r, ["Y", "Ball on putting surface within regulation", "Par 3 = tee shot | Par 4 = within 2 | Par 5 = within 3"]); r += 1
+guide_row(r, ["N", "Missed the green in regulation", "Chipping / pitching in = N"]); r += 1
+guide_row(r, ["(blank)", "Pick up holes and Overall rows", ""]); r += 1
 
 r += 1
 guide_section(r, "SENTIMENT -- how you felt the hole or round went"); r += 1
-guide_subhdr(r, ["Sentiment", "Your words might include...", ""]); r += 1
+guide_subhdr(r, ["Value", "Your words might include...", ""]); r += 1
 for vals in [
-    ("Positive",  "great, best hole, happy, love it, exactly the plan, nice, solid, holed it", ""),
-    ("Neutral",   "ok, sensible, got away with it, fine, average, recovered, not bad", ""),
-    ("Negative",  "disappointed, disaster, terrible, nightmare, duffed, dire, struggled, awful, hack, lucky to escape, poor", ""),
+    ("Positive",  "great, best hole, happy, exactly the plan, nice, solid, holed it, love it", ""),
+    ("Neutral",   "ok, sensible, got away with it, fine, recovered, not bad, average",         ""),
+    ("Negative",  "disappointed, disaster, terrible, nightmare, duffed, dire, struggled, hack, awful, poor", ""),
 ]:
     guide_row(r, vals); r += 1
 
 r += 1
-guide_section(r, "BALL STRIKING RATINGS -- for Overall rows, one rating per club category"); r += 1
-guide_subhdr(r, ["Rating", "Your words might include...", ""]); r += 1
+guide_section(r, "BALL STRIKING RATINGS -- Overall rows, one rating per club category"); r += 1
+guide_subhdr(r, ["Rating", "Your words might include...", "Numeric (PBI)"]); r += 1
 for vals in [
-    ("Great",   "monster, perfect, very good, flushed it, exactly where I wanted", ""),
-    ("Good",    "good, solid, nice, decent, hit it well",                          ""),
-    ("Average", "ok, bit fadey, slight fade/slice, average, could be better",      ""),
-    ("Poor",    "duffed, hacked, bladed, hooked, sliced, below average, dire, terrible, sprayed", ""),
+    ("Great",   "monster, perfect, very good, flushed it, exactly where I wanted", "4"),
+    ("Good",    "good, solid, nice, decent, hit it well",                          "3"),
+    ("Average", "ok, bit fadey, slight fade/slice, average, could be better",      "2"),
+    ("Poor",    "duffed, hacked, bladed, hooked, sliced, below average, dire",     "1"),
 ]:
     guide_row(r, vals); r += 1
 
 r += 1
-guide_section(r, "PICK UP -- did you finish the hole?"); r += 1
-guide_subhdr(r, ["Value", "Meaning", ""]); r += 1
-guide_row(r, ["N", "Holed out -- counted every stroke", ""]); r += 1
-guide_row(r, ["Y", "Picked up / did not finish -- score is an estimate", ""]); r += 1
+guide_section(r, "SENTIMENT NUMERIC SCALE (for Power BI)"); r += 1
+guide_subhdr(r, ["Text", "Numeric", ""]); r += 1
+for vals in [("Positive", 5, ""), ("Neutral", 3, ""), ("Negative", 1, "")]:
+    guide_row(r, vals); r += 1
 
 r += 1
 guide_section(r, "OVERALL ROW TIPS -- one per round, Hole = 0"); r += 1
-ws_g.merge_cells(start_row=r, start_column=1, end_row=r, end_column=3)
 tips = [
-    "Notes should cover: tee time, weather, wind, course conditions, overall impressions.",
+    "Notes: tee time, weather, wind, course conditions, overall impressions.",
     "Score / Strokes = gross total for the round.",
-    "Ball striking columns = how each club category felt across the whole round.",
-    "Putts = total putts for the round (count all holes).",
-    "Penalties = total penalty strokes for the round.",
-    "Tee Colour = which tees played (affects par, distance, stroke index).",
+    "FIR / GIR = leave blank on Overall rows (fill totals in notes if wanted).",
+    "Course Rating, Slope, WHS Index = persist here so changes over time are captured.",
+    "Ball striking = how each club category felt across the whole round.",
+    "Putts / Penalties = total for the round.",
 ]
 for tip in tips:
+    ws_g.merge_cells(start_row=r, start_column=1, end_row=r, end_column=3)
     cell = ws_g.cell(row=r, column=1, value=tip)
     cell.font = GUIDE_BODY
-    ws_g.merge_cells(start_row=r, start_column=1, end_row=r, end_column=3)
     r += 1
 
 
 # ── Save ─────────────────────────────────────────────────────────────────────
-# Saves template to repo only -- does NOT touch the live Drive file.
-# To initialise a fresh Drive file (e.g. new season), manually copy:
-#   copy "Golf Round Recap.xlsx" "G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"
 wb.save(TEMPLATE_PATH)
 print(f"Template saved : {TEMPLATE_PATH}")
-print(f"  Pupuke (White): Par {total_par}, {total_dist}m")
-print(f"  Tabs: Rounds (24 cols) | Courses (7 cols) | Guide")
+print(f"  Rounds: 29 cols | Courses: 9 cols | Guide: updated")
+print(f"  Pupuke White: Par {total_par}, {total_dist}m, Rating 68.2, Slope 119")
 print(f"  Drive file NOT touched -- copy manually only when a full reset is needed.")

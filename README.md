@@ -20,7 +20,7 @@ A personal golf database tracking rounds hole-by-hole. Each round is stored as a
 
 ---
 
-## Rounds Tab — Column Guide (24 columns)
+## Rounds Tab — Column Guide (29 columns)
 
 | # | Column | Type | Notes |
 |---|---|---|---|
@@ -35,19 +35,24 @@ A personal golf database tracking rounds hole-by-hole. Each round is stored as a
 | 9 | **Strokes** | Number | Actual strokes taken. For Overall: total round strokes |
 | 10 | **Putts** | Number | Number of putts. For Overall: total round putts |
 | 11 | **Penalties** | Number | Penalty strokes. For Overall: total round penalties |
-| 12 | **Tee Club** | Text | Club used off the tee (e.g. `Driver`, `3 Wood`, `4 Iron`) |
-| 13 | **Pick Up** | Dropdown | `Y` if you picked up / didn't finish the hole. `N` otherwise |
-| 14 | **Sentiment** | Dropdown | `Positive` / `Neutral` / `Negative` — how you felt the hole went |
-| 15 | **Driver** | Dropdown | **Overall rows only.** Ball striking: `Great` / `Good` / `Average` / `Poor` |
-| 16 | **Woods** | Dropdown | Overall rows only. Fairway woods striking rating |
-| 17 | **Hybrids** | Dropdown | Overall rows only. Hybrid striking rating |
-| 18 | **Long Irons (5-7)** | Dropdown | Overall rows only. Long iron striking rating |
-| 19 | **Short Irons (8-P)** | Dropdown | Overall rows only. Short iron striking rating |
-| 20 | **Wedges (GW/SW/LW)** | Dropdown | Overall rows only. Wedge striking rating |
-| 21 | **Putter** | Dropdown | Overall rows only. Putting feel rating |
-| 22 | **Playing Handicap** | Number | Your playing handicap for the round |
-| 23 | **Tee Colour** | Dropdown | `White` / `Yellow` / `Red` / `Blue` / `Black` |
-| 24 | **Notes** | Text | Free text detail (see prompts below) |
+| 12 | **FIR** | Dropdown | **Hole rows, par 4/5 only.** `Y` = tee shot on fairway. `N` = missed. Leave blank on par 3s and Overall |
+| 13 | **GIR** | Dropdown | **Hole rows only.** `Y` = ball on green within regulation shots (par 3: tee shot / par 4: within 2 / par 5: within 3). Leave blank on pick-ups and Overall |
+| 14 | **Tee Club** | Text | Club used off the tee (e.g. `Driver`, `3 Hybrid`, `5 Wood`) |
+| 15 | **Pick Up** | Dropdown | `Y` if you picked up / didn't finish the hole. `N` otherwise |
+| 16 | **Sentiment** | Dropdown | `Positive` / `Neutral` / `Negative` — how you felt the hole went |
+| 17 | **Driver** | Dropdown | **Overall rows only.** Ball striking: `Great` / `Good` / `Average` / `Poor` |
+| 18 | **Woods** | Dropdown | Overall rows only. Fairway woods striking rating |
+| 19 | **Hybrids** | Dropdown | Overall rows only. Hybrid striking rating |
+| 20 | **Long Irons (5-7)** | Dropdown | Overall rows only. Long iron striking rating |
+| 21 | **Short Irons (8-P)** | Dropdown | Overall rows only. Short iron striking rating |
+| 22 | **Wedges (GW/SW/LW)** | Dropdown | Overall rows only. Wedge striking rating |
+| 23 | **Putter** | Dropdown | Overall rows only. Putting feel rating |
+| 24 | **Playing Handicap** | Number | Your playing handicap for the round |
+| 25 | **Tee Colour** | Dropdown | `White` / `Yellow` / `Red` / `Blue` / `Black` |
+| 26 | **Course Rating** | Number | **Overall rows only.** Course rating at time of play (e.g. `68.2`) — persisted so changes over time are captured |
+| 27 | **Slope** | Number | Overall rows only. Slope rating at time of play (e.g. `119`) |
+| 28 | **WHS Index** | Number | Overall rows only. Your WHS handicap index at time of play (e.g. `24.4`) |
+| 29 | **Notes** | Text | Free text detail (see prompts below) |
 
 ---
 
@@ -64,6 +69,7 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 > **Score / Strokes?** Your gross total for the round.
 > **Putts / Penalties?** Round totals.
 > **Playing Handicap?** Your handicap for this round.
+> **Course Rating / Slope / WHS Index?** Fill from the Courses tab and your current WHS index — persisted here so it's captured if they change over time.
 > **Sentiment?** How did the round feel overall?
 > **Ball striking (Driver / Woods / Hybrids / Long Irons / Short Irons / Wedges / Putter)?**
 > Rate each category: `Great` / `Good` / `Average` / `Poor`. Leave blank if you didn't use that club type.
@@ -76,6 +82,8 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 ### For each hole (Note Type = `Hole`)
 
 > **Hole / Par / Distance / Stroke Index?** Look up from the Courses tab for the tee colour played.
+> **FIR?** Par 4/5 only — did the tee shot find the fairway? `Y` / `N`. Leave blank on par 3s.
+> **GIR?** Did you hit the green in regulation? `Y` / `N`. Leave blank on pick-ups.
 > **Score?** Select result from dropdown (Birdie, Bogey, etc.)
 > **Strokes?** Actual count including penalties.
 > **Putts?** How many putts did you take?
@@ -130,12 +138,14 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 | # | Column | Notes |
 |---|---|---|
 | 1 | **Course** | Course name — must match exactly what you use in the Rounds tab |
-| 2 | **Hole** | Hole number 1–18 |
+| 2 | **Hole** | Hole number 1–18, then TOTAL row |
 | 3 | **Tee Colour** | Tee the data applies to — add separate rows per tee if needed |
 | 4 | **Par** | Par for the hole from this tee |
 | 5 | **Distance (m)** | Distance in metres from this tee |
 | 6 | **Stroke Index** | Handicap stroke index (1 = hardest, 18 = easiest) |
-| 7 | **Notes** | Any notes about the hole (shape, hazards, typical miss) |
+| 7 | **Course Rating** | On the TOTAL row — course rating for this tee (e.g. `68.2`) |
+| 8 | **Slope** | On the TOTAL row — slope rating for this tee (e.g. `119`) |
+| 9 | **Notes** | Any notes about the hole (shape, hazards, typical miss) |
 
 ### Pupuke Golf Club (White tees) — verified data
 
@@ -214,7 +224,7 @@ This saves the template to the repo and copies it to Google Drive.
 ## Status & Next Steps
 
 ### What's been built
-- `Golf Round Recap.xlsx` — Rounds tab (24 columns) and Courses tab (7 columns)
+- `Golf Round Recap.xlsx` — Rounds (29 cols), Courses (9 cols), Guide tab
 - Rounds tab has dropdowns for Note Type, Score, Pick Up, Sentiment, Tee Colour, and all 7 ball striking ratings
 - Courses tab includes Tee Colour column — par and distance vary per tee
 - Pupuke Golf Club pre-loaded with verified White tee data (par 70, 5188m, correct stroke indexes)
