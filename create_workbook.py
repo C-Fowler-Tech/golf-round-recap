@@ -87,7 +87,7 @@ ws.freeze_panes = "A2"
 
 STRIKE = '"Great,Good,Average,Poor"'
 ws.add_data_validation(dv('"Overall,Hole"',                                           "C2:C9999"))
-ws.add_data_validation(dv('"Eagle,Birdie,Par,Bogey,Double Bogey,Triple Bogey,Other"', "H2:H9999"))
+ws.add_data_validation(dv('"Eagle,Birdie,Par,Bogey,Double Bogey,Triple Bogey,Pick Up,Other"', "H2:H9999"))
 ws.add_data_validation(dv('"Y,N"',                                                    "L2:L9999"))  # FIR
 ws.add_data_validation(dv('"Y,N"',                                                    "M2:M9999"))  # GIR
 ws.add_data_validation(dv('"Y,N"',                                                    "O2:O9999"))  # Pick Up
@@ -226,7 +226,8 @@ for vals in [
     ("Bogey",        "+1",                           "5 strokes on a par 4"),
     ("Double Bogey", "+2",                           "6 strokes on a par 4"),
     ("Triple Bogey", "+3",                           "7 strokes on a par 4"),
-    ("Other",        "+4 or worse, or pick up",      "8+ strokes or picked up"),
+    ("Pick Up",      "Did not finish hole",           "Use with Pick Up column = Y"),
+    ("Other",        "+4 or worse",                  "8+ strokes, no pick up"),
 ]:
     guide_row(r, vals); r += 1
 

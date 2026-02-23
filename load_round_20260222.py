@@ -81,7 +81,7 @@ STROKES = [5, 4, 7, 4, 6, 6, 7, 5, 4, 7, 6, 8, 6, 5, 5, 5, 5, 6]
 
 def score_label(strokes, par, pickup):
     if pickup == "Y":
-        return "Other"
+        return "Pick Up"
     return {-2:"Eagle",-1:"Birdie",0:"Par",1:"Bogey",
             2:"Double Bogey",3:"Triple Bogey"}.get(strokes - par, "Other")
 

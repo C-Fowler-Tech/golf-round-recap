@@ -112,7 +112,8 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 | Bogey | +1 | 5 strokes |
 | Double Bogey | +2 | 6 strokes |
 | Triple Bogey | +3 | 7 strokes |
-| Other | +4 or worse, or pick up | 8+ strokes, or picked up |
+| Pick Up | Did not finish hole | Use with Pick Up column = Y |
+| Other | +4 or worse | 8+ strokes, holed out |
 
 ### Sentiment
 
