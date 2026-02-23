@@ -31,7 +31,7 @@ A personal golf database tracking rounds hole-by-hole. Each round is stored as a
 | 5 | **Par** | Number | Par for this hole. For Overall: total course par for the tee played |
 | 6 | **Distance (m)** | Number | Hole distance in metres. For Overall: total course distance |
 | 7 | **Stroke Index** | Number | Stroke index for this hole (from Courses tab). Leave blank for Overall |
-| 8 | **Score** | Dropdown | Hole result: `Eagle` / `Birdie` / `Par` / `Bogey` / `Double Bogey` / `Triple Bogey` / `Other`. For Overall: gross total score (e.g. `85`) |
+| 8 | **Score** | Dropdown | Hole result: `Hole in One` / `Eagle` / `Birdie` / `Par` / `Bogey` / `Double Bogey` / `Triple Bogey` / `Pick Up` / `Other`. For Overall: gross total score (e.g. `85`) |
 | 9 | **Strokes** | Number | Actual strokes taken. For Overall: total round strokes |
 | 10 | **Putts** | Number | Number of putts. For Overall: total round putts |
 | 11 | **Penalties** | Number | Penalty strokes. For Overall: total round penalties |
@@ -106,6 +106,7 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 
 | Result | Strokes vs Par | Example (par 4) |
 |---|---|---|
+| Hole in One | Par 3, 1 stroke | The dream |
 | Eagle | -2 or better | 2 strokes |
 | Birdie | -1 | 3 strokes |
 | Par | 0 | 4 strokes |
