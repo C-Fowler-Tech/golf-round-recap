@@ -87,7 +87,7 @@ ws.freeze_panes = "A2"
 
 STRIKE = '"Great,Good,Average,Poor"'
 ws.add_data_validation(dv('"Overall,Hole"',                                           "C2:C9999"))
-ws.add_data_validation(dv('"Hole in One,Eagle,Birdie,Par,Bogey,Double Bogey,Triple Bogey,Pick Up,Other"', "H2:H9999"))
+ws.add_data_validation(dv('"Hole in One,Albatross,Eagle,Birdie,Par,Bogey,Double Bogey,Triple Bogey,Pick Up,Other"', "H2:H9999"))
 ws.add_data_validation(dv('"Y,N"',                                                    "L2:L9999"))  # FIR
 ws.add_data_validation(dv('"Y,N"',                                                    "M2:M9999"))  # GIR
 ws.add_data_validation(dv('"Y,N"',                                                    "O2:O9999"))  # Pick Up
@@ -221,7 +221,8 @@ guide_section(r, "SCORE LABELS -- Score column on Hole rows"); r += 1
 guide_subhdr(r, ["Result", "Strokes vs Par", "Example (par 4)"]); r += 1
 for vals in [
     ("Hole in One",  "-2 or better (par 3)",         "1 stroke on a par 3 -- the dream"),
-    ("Eagle",        "-2 or better",                "2 strokes on a par 4"),
+    ("Albatross",    "-3",                           "2 strokes on a par 5"),
+    ("Eagle",        "-2",                           "2 strokes on a par 4, 3 on a par 5"),
     ("Birdie",       "-1",                           "3 strokes on a par 4"),
     ("Par",          "0",                            "4 strokes on a par 4"),
     ("Bogey",        "+1",                           "5 strokes on a par 4"),

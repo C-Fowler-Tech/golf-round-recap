@@ -107,7 +107,8 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 | Result | Strokes vs Par | Example (par 4) |
 |---|---|---|
 | Hole in One | Par 3, 1 stroke | The dream |
-| Eagle | -2 or better | 2 strokes |
+| Albatross | -3 | 2 strokes on a par 5 |
+| Eagle | -2 | 2 strokes on a par 4 |
 | Birdie | -1 | 3 strokes |
 | Par | 0 | 4 strokes |
 | Bogey | +1 | 5 strokes |
