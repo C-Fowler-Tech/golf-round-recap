@@ -131,10 +131,14 @@ for i, row in enumerate(overall_rows):
 ws2 = wb.create_sheet("Hole Stats")
 ws2.freeze_panes = "A2"
 
+# Build (date, course) -> tee colour from Overall rows (hole rows don't store it)
+tee_map = {(row[C_DATE], row[C_COURSE]): row[C_TEE_COLOUR] for row in overall_rows}
+
 # Group hole rows by (Course, Tee Colour, Hole)
 hole_data = defaultdict(list)
 for row in hole_rows:
-    key = (row[C_COURSE], row[C_TEE_COLOUR] or "?", row[C_HOLE])
+    tee = row[C_TEE_COLOUR] or tee_map.get((row[C_DATE], row[C_COURSE]), "?")
+    key = (row[C_COURSE], tee, row[C_HOLE])
     hole_data[key].append(row)
 
 # Snapshot of par/dist/si per hole (from first occurrence)
