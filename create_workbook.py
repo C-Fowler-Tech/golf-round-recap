@@ -332,8 +332,8 @@ r += 1
 ht_section(r, "ENTERING A NEW ROUND"); r += 1
 for step, label, detail in [
     ("1", "Open live file",        r"G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"),
-    ("2", "Add Overall row",       "Note Type = Overall, Hole = 0. Fill date, course, tee colour, gross score, "
-                                   "playing handicap, course rating, slope, WHS index, ball striking ratings, notes "
+    ("2", "Add Overall row",       "Note Type = Overall, Hole = 0. Fill date, course, tee colour (default = White if not specified), "
+                                   "gross score, playing handicap, course rating, slope, WHS index, ball striking ratings, notes "
                                    "(tee time, weather, conditions, overall impressions)."),
     ("3", "Add Hole rows",         "One row per hole. Note Type = Hole. Fill par, distance, stroke index from "
                                    "the Courses tab. Fill FIR (par 4/5 only), GIR, score, strokes, putts, "

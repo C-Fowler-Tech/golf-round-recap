@@ -64,7 +64,7 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 
 > **Date?** Date played.
 > **Course?** e.g. `Pupuke`
-> **Tee Colour?** e.g. `White` — determines which par/distance/stroke index to use from Courses tab.
+> **Tee Colour?** e.g. `White` — determines which par/distance/stroke index to use from Courses tab. **Default: White if not specified.**
 > **Par / Distance?** Copy totals from the Courses tab for the tee colour played.
 > **Score / Strokes?** Your gross total for the round.
 > **Putts / Penalties?** Round totals.
