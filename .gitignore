@@ -1,4 +1,6 @@
-# Excel temp files
+# Excel files -- live on Google Drive, not in source control
+*.xlsx
+*.xls
 ~$*.xlsx
 ~$*.xls
 
