@@ -1,6 +1,4 @@
-# Excel files -- live on Google Drive, not in source control
-*.xlsx
-*.xls
+# Excel temp lock files only -- the template xlsx is tracked in source control
 ~$*.xlsx
 ~$*.xls
 

@@ -11,8 +11,15 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 from datetime import date
 import os
+import shutil
+import pathlib
 
-OUTPUT_PATH = r"G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"
+# Template saved to the repo for source control
+REPO_DIR     = pathlib.Path(__file__).parent
+TEMPLATE_PATH = REPO_DIR / "Golf Round Recap.xlsx"
+
+# Live working file on Google Drive
+DRIVE_PATH = pathlib.Path(r"G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx")
 
 # ── Styles ────────────────────────────────────────────────────────────────────
 HDR_FILL  = PatternFill("solid", fgColor="1F4E79")
@@ -161,8 +168,14 @@ ws_c.cell(row=20, column=4, value=total_dist).font = bold
 
 
 # ── Save ─────────────────────────────────────────────────────────────────────
-os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-wb.save(OUTPUT_PATH)
-print(f"Saved to: {OUTPUT_PATH}")
+# 1. Save template to repo (source control)
+wb.save(TEMPLATE_PATH)
+print(f"Template saved : {TEMPLATE_PATH}")
+
+# 2. Copy to Google Drive (live working file)
+DRIVE_PATH.parent.mkdir(parents=True, exist_ok=True)
+shutil.copy2(TEMPLATE_PATH, DRIVE_PATH)
+print(f"Copied to Drive: {DRIVE_PATH}")
+
 print(f"  Pupuke: Par {total_par}, {total_dist}m")
 print(f"  Rounds tab: 23 columns, 1 sample round (Overall + 3 holes)")
