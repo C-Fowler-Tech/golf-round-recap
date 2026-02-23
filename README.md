@@ -12,6 +12,7 @@ A personal golf database tracking rounds hole-by-hole. Each round is stored as a
 |---|---|
 | `Rounds` | One row per hole + one Overall row per round |
 | `Courses` | Course reference data (par, distance, stroke index per tee colour) |
+| `Guide` | Scoring labels, sentiment guide, ball striking ratings — quick reference for data entry |
 
 **Locations:**
 - `C:\Users\craig.f\Home_Projects\Golf Round Recap\Golf Round Recap.xlsx` — base template in source control
@@ -88,6 +89,39 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 > - Any misses — why and where?
 > - Putting — distances, number of putts, any lips or misreads?
 > - What would you do differently?
+
+---
+
+## Guide Tab — Sentiment & Rating Reference
+
+### Score labels
+
+| Result | Strokes vs Par | Example (par 4) |
+|---|---|---|
+| Eagle | -2 or better | 2 strokes |
+| Birdie | -1 | 3 strokes |
+| Par | 0 | 4 strokes |
+| Bogey | +1 | 5 strokes |
+| Double Bogey | +2 | 6 strokes |
+| Triple Bogey | +3 | 7 strokes |
+| Other | +4 or worse, or pick up | 8+ strokes, or picked up |
+
+### Sentiment
+
+| Value | Your words might include... |
+|---|---|
+| **Positive** | great, best hole, happy, exactly the plan, nice, solid, holed it, love it |
+| **Neutral** | ok, sensible, got away with it, fine, recovered, not bad, average |
+| **Negative** | disappointed, disaster, terrible, nightmare, duffed, dire, struggled, hack, awful, poor, lucky to escape |
+
+### Ball striking ratings (Overall rows)
+
+| Rating | Your words might include... |
+|---|---|
+| **Great** | monster, perfect, very good, flushed it, exactly where I wanted |
+| **Good** | good, solid, nice, decent, hit it well |
+| **Average** | ok, bit fadey, slight fade/slice, could be better |
+| **Poor** | duffed, hacked, bladed, hooked, sliced, below average, dire, terrible, sprayed |
 
 ---
 

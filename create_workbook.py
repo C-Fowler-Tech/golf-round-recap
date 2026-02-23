@@ -196,15 +196,109 @@ ws_c.cell(row=20, column=4, value=total_par).font  = bold
 ws_c.cell(row=20, column=5, value=total_dist).font = bold
 
 
+# ============================================================
+# TAB 3 -- GUIDE
+# ============================================================
+ws_g = wb.create_sheet("Guide")
+ws_g.sheet_view.showGridLines = False
+
+GUIDE_HDR = Font(color="FFFFFF", bold=True, name="Calibri", size=11)
+GUIDE_SEC = Font(bold=True, name="Calibri", size=12)
+GUIDE_BODY = Font(name="Calibri", size=11)
+SEC_FILL = PatternFill("solid", fgColor="1F4E79")
+SUB_FILL = PatternFill("solid", fgColor="2E75B6")
+SUB_FONT = Font(color="FFFFFF", bold=True, name="Calibri", size=10)
+
+ws_g.column_dimensions["A"].width = 30
+ws_g.column_dimensions["B"].width = 18
+ws_g.column_dimensions["C"].width = 50
+
+def guide_section(row, title):
+    cell = ws_g.cell(row=row, column=1, value=title)
+    cell.font = GUIDE_SEC
+    cell.fill = SEC_FILL
+    cell.font = Font(color="FFFFFF", bold=True, name="Calibri", size=12)
+    ws_g.merge_cells(start_row=row, start_column=1, end_row=row, end_column=3)
+    ws_g.row_dimensions[row].height = 20
+
+def guide_subhdr(row, cols):
+    for col, val in enumerate(cols, 1):
+        cell = ws_g.cell(row=row, column=col, value=val)
+        cell.font = SUB_FONT
+        cell.fill = SUB_FILL
+
+def guide_row(row, vals):
+    for col, val in enumerate(vals, 1):
+        cell = ws_g.cell(row=row, column=col, value=val)
+        cell.font = GUIDE_BODY
+        if row % 2 == 0:
+            cell.fill = ALT_FILL
+
+r = 1
+guide_section(r, "SCORE LABELS -- use these in the Score column for Hole rows"); r += 1
+guide_subhdr(r, ["Result", "Strokes vs Par", "Example (par 4)"]); r += 1
+for vals in [
+    ("Eagle",        "-2 or better", "2 strokes on a par 4"),
+    ("Birdie",       "-1",           "3 strokes on a par 4"),
+    ("Par",          "0",            "4 strokes on a par 4"),
+    ("Bogey",        "+1",           "5 strokes on a par 4"),
+    ("Double Bogey", "+2",           "6 strokes on a par 4"),
+    ("Triple Bogey", "+3",           "7 strokes on a par 4"),
+    ("Other",        "+4 or worse, or pick up", "8+ strokes, or picked up"),
+]:
+    guide_row(r, vals); r += 1
+
+r += 1
+guide_section(r, "SENTIMENT -- how you felt the hole or round went"); r += 1
+guide_subhdr(r, ["Sentiment", "Your words might include...", ""]); r += 1
+for vals in [
+    ("Positive",  "great, best hole, happy, love it, exactly the plan, nice, solid, holed it", ""),
+    ("Neutral",   "ok, sensible, got away with it, fine, average, recovered, not bad", ""),
+    ("Negative",  "disappointed, disaster, terrible, nightmare, duffed, dire, struggled, awful, hack, lucky to escape, poor", ""),
+]:
+    guide_row(r, vals); r += 1
+
+r += 1
+guide_section(r, "BALL STRIKING RATINGS -- for Overall rows, one rating per club category"); r += 1
+guide_subhdr(r, ["Rating", "Your words might include...", ""]); r += 1
+for vals in [
+    ("Great",   "monster, perfect, very good, flushed it, exactly where I wanted", ""),
+    ("Good",    "good, solid, nice, decent, hit it well",                          ""),
+    ("Average", "ok, bit fadey, slight fade/slice, average, could be better",      ""),
+    ("Poor",    "duffed, hacked, bladed, hooked, sliced, below average, dire, terrible, sprayed", ""),
+]:
+    guide_row(r, vals); r += 1
+
+r += 1
+guide_section(r, "PICK UP -- did you finish the hole?"); r += 1
+guide_subhdr(r, ["Value", "Meaning", ""]); r += 1
+guide_row(r, ["N", "Holed out -- counted every stroke", ""]); r += 1
+guide_row(r, ["Y", "Picked up / did not finish -- score is an estimate", ""]); r += 1
+
+r += 1
+guide_section(r, "OVERALL ROW TIPS -- one per round, Hole = 0"); r += 1
+ws_g.merge_cells(start_row=r, start_column=1, end_row=r, end_column=3)
+tips = [
+    "Notes should cover: tee time, weather, wind, course conditions, overall impressions.",
+    "Score / Strokes = gross total for the round.",
+    "Ball striking columns = how each club category felt across the whole round.",
+    "Putts = total putts for the round (count all holes).",
+    "Penalties = total penalty strokes for the round.",
+    "Tee Colour = which tees played (affects par, distance, stroke index).",
+]
+for tip in tips:
+    cell = ws_g.cell(row=r, column=1, value=tip)
+    cell.font = GUIDE_BODY
+    ws_g.merge_cells(start_row=r, start_column=1, end_row=r, end_column=3)
+    r += 1
+
+
 # ── Save ─────────────────────────────────────────────────────────────────────
-# 1. Save template to repo (source control)
+# Saves template to repo only -- does NOT touch the live Drive file.
+# To initialise a fresh Drive file (e.g. new season), manually copy:
+#   copy "Golf Round Recap.xlsx" "G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"
 wb.save(TEMPLATE_PATH)
 print(f"Template saved : {TEMPLATE_PATH}")
-
-# 2. Copy to Google Drive (live working file)
-DRIVE_PATH.parent.mkdir(parents=True, exist_ok=True)
-shutil.copy2(TEMPLATE_PATH, DRIVE_PATH)
-print(f"Copied to Drive: {DRIVE_PATH}")
-
 print(f"  Pupuke (White): Par {total_par}, {total_dist}m")
-print(f"  Rounds tab: 24 columns | Courses tab: 7 columns")
+print(f"  Tabs: Rounds (24 cols) | Courses (7 cols) | Guide")
+print(f"  Drive file NOT touched -- copy manually only when a full reset is needed.")
