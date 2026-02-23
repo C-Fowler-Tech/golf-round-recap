@@ -11,35 +11,42 @@ A personal golf database tracking rounds hole-by-hole. Each round is stored as a
 | Tab | Purpose |
 |---|---|
 | `Rounds` | One row per hole + one Overall row per round |
-| `Courses` | Course reference data (par, distance per hole) |
+| `Courses` | Course reference data (par, distance, stroke index per tee colour) |
+
+**Locations:**
+- `C:\Users\craig.f\Home_Projects\Golf Round Recap\Golf Round Recap.xlsx` — base template in source control
+- `G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx` — live working file (enter data here)
 
 ---
 
-## Rounds Tab — Column Guide
+## Rounds Tab — Column Guide (24 columns)
 
-| Column | Type | Notes |
-|---|---|---|
-| **Date** | Date | Date of the round |
-| **Course** | Text | Match the name used in the Courses tab |
-| **Note Type** | Dropdown | `Overall` or `Hole` |
-| **Hole** | Number | Hole number 1–18. Use **0** for the Overall row |
-| **Par** | Number | Par for this hole (from Courses tab). For Overall: total course par |
-| **Distance (m)** | Number | Hole distance in metres. For Overall: total course distance |
-| **Score** | Dropdown | Hole result: `Eagle` / `Birdie` / `Par` / `Bogey` / `Double Bogey` / `Triple Bogey` / `Other`. For Overall: enter gross total score (e.g. `85`) |
-| **Strokes** | Number | Actual strokes taken. For Overall: total round strokes |
-| **Putts** | Number | Number of putts. For Overall: total round putts |
-| **Penalties** | Number | Penalty strokes. For Overall: total round penalties |
-| **Tee Club** | Text | Club used off the tee (e.g. `Driver`, `3 Wood`, `4 Iron`) |
-| **Pick Up** | Dropdown | `Y` if you picked up / didn't finish the hole. `N` otherwise |
-| **Sentiment** | Dropdown | `Positive` / `Neutral` / `Negative` — how you felt the hole went |
-| **Driver** | Dropdown | **Overall rows only.** Ball striking rating: `Great` / `Good` / `Average` / `Poor` |
-| **Woods** | Dropdown | Overall rows only. Fairway woods striking rating |
-| **Hybrids** | Dropdown | Overall rows only. Hybrid striking rating |
-| **Long Irons (5-7)** | Dropdown | Overall rows only. Long iron striking rating |
-| **Short Irons (8-P)** | Dropdown | Overall rows only. Short iron striking rating |
-| **Wedges (GW/SW/LW)** | Dropdown | Overall rows only. Wedge striking rating |
-| **Putter** | Dropdown | Overall rows only. Putting feel rating |
-| **Notes** | Text | Free text detail (see prompts below) |
+| # | Column | Type | Notes |
+|---|---|---|---|
+| 1 | **Date** | Date | Date of the round |
+| 2 | **Course** | Text | Match the name used in the Courses tab |
+| 3 | **Note Type** | Dropdown | `Overall` or `Hole` |
+| 4 | **Hole** | Number | Hole number 1–18. Use **0** for the Overall row |
+| 5 | **Par** | Number | Par for this hole. For Overall: total course par for the tee played |
+| 6 | **Distance (m)** | Number | Hole distance in metres. For Overall: total course distance |
+| 7 | **Stroke Index** | Number | Stroke index for this hole (from Courses tab). Leave blank for Overall |
+| 8 | **Score** | Dropdown | Hole result: `Eagle` / `Birdie` / `Par` / `Bogey` / `Double Bogey` / `Triple Bogey` / `Other`. For Overall: gross total score (e.g. `85`) |
+| 9 | **Strokes** | Number | Actual strokes taken. For Overall: total round strokes |
+| 10 | **Putts** | Number | Number of putts. For Overall: total round putts |
+| 11 | **Penalties** | Number | Penalty strokes. For Overall: total round penalties |
+| 12 | **Tee Club** | Text | Club used off the tee (e.g. `Driver`, `3 Wood`, `4 Iron`) |
+| 13 | **Pick Up** | Dropdown | `Y` if you picked up / didn't finish the hole. `N` otherwise |
+| 14 | **Sentiment** | Dropdown | `Positive` / `Neutral` / `Negative` — how you felt the hole went |
+| 15 | **Driver** | Dropdown | **Overall rows only.** Ball striking: `Great` / `Good` / `Average` / `Poor` |
+| 16 | **Woods** | Dropdown | Overall rows only. Fairway woods striking rating |
+| 17 | **Hybrids** | Dropdown | Overall rows only. Hybrid striking rating |
+| 18 | **Long Irons (5-7)** | Dropdown | Overall rows only. Long iron striking rating |
+| 19 | **Short Irons (8-P)** | Dropdown | Overall rows only. Short iron striking rating |
+| 20 | **Wedges (GW/SW/LW)** | Dropdown | Overall rows only. Wedge striking rating |
+| 21 | **Putter** | Dropdown | Overall rows only. Putting feel rating |
+| 22 | **Playing Handicap** | Number | Your playing handicap for the round |
+| 23 | **Tee Colour** | Dropdown | `White` / `Yellow` / `Red` / `Blue` / `Black` |
+| 24 | **Notes** | Text | Free text detail (see prompts below) |
 
 ---
 
@@ -47,13 +54,15 @@ A personal golf database tracking rounds hole-by-hole. Each round is stored as a
 
 ### Starting a new round
 
-Before entering hole rows, add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
+Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 
 > **Date?** Date played.
 > **Course?** e.g. `Pupuke`
-> **Par / Distance?** Copy totals from the Courses tab.
+> **Tee Colour?** e.g. `White` — determines which par/distance/stroke index to use from Courses tab.
+> **Par / Distance?** Copy totals from the Courses tab for the tee colour played.
 > **Score / Strokes?** Your gross total for the round.
 > **Putts / Penalties?** Round totals.
+> **Playing Handicap?** Your handicap for this round.
 > **Sentiment?** How did the round feel overall?
 > **Ball striking (Driver / Woods / Hybrids / Long Irons / Short Irons / Wedges / Putter)?**
 > Rate each category: `Great` / `Good` / `Average` / `Poor`. Leave blank if you didn't use that club type.
@@ -65,7 +74,7 @@ Before entering hole rows, add the **Overall row first** (Note Type = `Overall`,
 
 ### For each hole (Note Type = `Hole`)
 
-> **Hole / Par / Distance?** Look up from the Courses tab.
+> **Hole / Par / Distance / Stroke Index?** Look up from the Courses tab for the tee colour played.
 > **Score?** Select result from dropdown (Birdie, Bogey, etc.)
 > **Strokes?** Actual count including penalties.
 > **Putts?** How many putts did you take?
@@ -82,22 +91,45 @@ Before entering hole rows, add the **Overall row first** (Note Type = `Overall`,
 
 ---
 
-## Courses Tab — Column Guide
+## Courses Tab — Column Guide (7 columns)
 
-| Column | Notes |
-|---|---|
-| **Course** | Course name — must match exactly what you use in the Rounds tab |
-| **Hole** | Hole number 1–18 |
-| **Par** | Par for the hole |
-| **Distance (m)** | Distance in metres |
-| **Stroke Index** | Handicap stroke index (1 = hardest, 18 = easiest) |
-| **Notes** | Any notes about the hole (shape, hazards, typical miss) |
+| # | Column | Notes |
+|---|---|---|
+| 1 | **Course** | Course name — must match exactly what you use in the Rounds tab |
+| 2 | **Hole** | Hole number 1–18 |
+| 3 | **Tee Colour** | Tee the data applies to — add separate rows per tee if needed |
+| 4 | **Par** | Par for the hole from this tee |
+| 5 | **Distance (m)** | Distance in metres from this tee |
+| 6 | **Stroke Index** | Handicap stroke index (1 = hardest, 18 = easiest) |
+| 7 | **Notes** | Any notes about the hole (shape, hazards, typical miss) |
 
-> **Pupuke distances and stroke index are approximate.** Update from the official club scorecard.
+### Pupuke Golf Club (White tees) — verified data
+
+| Hole | Par | Distance (m) | Stroke Index |
+|------|-----|-------------|--------------|
+| 1 | 4 | 300 | 7 |
+| 2 | 3 | 139 | 15 |
+| 3 | 4 | 335 | 3 |
+| 4 | 4 | 304 | 13 |
+| 5 | 5 | 431 | 9 |
+| 6 | 3 | 165 | 11 |
+| 7 | 4 | 363 | 1 |
+| 8 | 4 | 333 | 5 |
+| 9 | 3 | 147 | 17 |
+| 10 | 5 | 422 | 14 |
+| 11 | 5 | 398 | 16 |
+| 12 | 4 | 362 | 2 |
+| 13 | 3 | 167 | 8 |
+| 14 | 4 | 285 | 10 |
+| 15 | 4 | 299 | 6 |
+| 16 | 4 | 238 | 18 |
+| 17 | 3 | 143 | 12 |
+| 18 | 4 | 357 | 4 |
+| **Total** | **70** | **5188** | |
 
 ### Adding a new course
 
-Add 18 rows (one per hole) with the course name matching exactly what you'll type in the Rounds tab.
+Add 18 rows per tee colour (e.g. 18 rows for White, 18 for Yellow) with the course name matching exactly what you'll type in the Rounds tab.
 
 ---
 
@@ -106,27 +138,27 @@ Add 18 rows (one per hole) with the course name matching exactly what you'll typ
 Once you have a few rounds in, useful things to look at:
 
 - **Scoring average by hole** — which holes consistently cost you strokes?
+- **Scoring by stroke index** — do you score better on easier holes as expected?
 - **Scoring by club off the tee** — driver vs. fairway wood vs. iron
 - **Putts per round trend** — is the short game improving?
 - **Sentiment vs. score correlation** — do positive holes actually score better?
 - **Pick-up rate** — how often are you not finishing holes and on which?
-- **Score vs. par by hole type** — par 3s, 4s, 5s
+- **Ball striking trends** — which club categories are improving over time?
 
 ---
 
 ## Workflow
 
 1. Play a round.
-2. Open `Golf Round Recap.xlsx`.
+2. Open the live file: `G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx`
 3. Add the **Overall row** for the round.
 4. Add a **Hole row** for each hole played (even picked-up holes — mark `Pick Up = Y`).
-5. Save the file (OneDrive AutoSave handles sync).
-6. Commit to git after a data entry session to keep a backup history.
+5. Commit the template to git after any structural changes (not data entry).
 
 ```bash
 cd "C:\Users\craig.f\Home_Projects\Golf Round Recap"
-git add "Golf Round Recap.xlsx"
-git commit -m "Add round: Pupuke 22-Feb-2026"
+git add .
+git commit -m "Update template structure"
 git push
 ```
 
@@ -134,30 +166,34 @@ git push
 
 ## Setup
 
-To regenerate the workbook structure from scratch (WARNING: overwrites all data):
+To regenerate the workbook structure from scratch (WARNING: this resets data in both locations):
 
 ```bash
+cd "C:\Users\craig.f\Home_Projects\Golf Round Recap"
 python create_workbook.py
 ```
+
+This saves the template to the repo and copies it to Google Drive.
 
 ---
 
 ## Status & Next Steps
 
 ### What's been built
-- `Golf Round Recap.xlsx` — Rounds tab (21 columns) and Courses tab
-- Rounds tab has dropdowns for Note Type, Score, Pick Up, Sentiment, and all 7 ball striking columns
-- Courses tab pre-loaded with Pupuke Golf Club (18 holes, approximate data)
+- `Golf Round Recap.xlsx` — Rounds tab (24 columns) and Courses tab (7 columns)
+- Rounds tab has dropdowns for Note Type, Score, Pick Up, Sentiment, Tee Colour, and all 7 ball striking ratings
+- Courses tab includes Tee Colour column — par and distance vary per tee
+- Pupuke Golf Club pre-loaded with verified White tee data (par 70, 5188m, correct stroke indexes)
 - Sample round in the Rounds tab showing correct structure for Overall + Hole rows
-- `create_workbook.py` — regenerates the workbook structure from scratch if needed
+- `create_workbook.py` — regenerates structure, saves to repo and copies to Google Drive
 
-### Needs doing before first real use
-- [ ] **Update Pupuke course data** — distances and stroke index are approximate. Open the Courses tab and update from the official Pupuke scorecard or the club website
-- [ ] **Delete the sample round** — rows 2-5 in the Rounds tab are example data, clear them before entering real rounds
-- [ ] **Add other courses** — add 18 rows per course to the Courses tab as you play new venues
+### Ready to use
+- [ ] **Delete the sample round** — rows 2–5 in the Rounds tab are example data, clear them before entering real rounds
+- [ ] **Add other tee colours for Pupuke** — add Yellow/Red rows if you play those tees
+- [ ] **Add other courses** — 18 rows per tee colour per course
 
 ### Ideas for later
-- **Analysis tab or separate script** — once a few rounds are in, a Python script (or Excel pivot) could surface: stroke average by hole, scoring by club off tee, putts per round trend, sentiment vs. score correlation
-- **Handicap tracking** — add a net score column or a separate tab for handicap differential history
-- **Shot tracking** — could add a fairways hit / greens in regulation column if you want more granular stats
-- **Course notes tab** — a tab for general notes per course (layout tips, local rules, favourite holes)
+- **Analysis script** — Python or Excel pivot: stroke average by hole, scoring by club, putts trend, sentiment vs. score, ball striking trends over time
+- **Handicap tracking** — net score column or separate tab for handicap differential history
+- **Stroke play / Stableford scoring** — add a Stableford points column for alternative scoring view
+- **Course notes tab** — general notes per course (layout tips, local rules, favourite holes)
