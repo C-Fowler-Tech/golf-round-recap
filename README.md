@@ -191,33 +191,56 @@ Once you have a few rounds in, useful things to look at:
 
 ---
 
-## Workflow
+## File locations
 
-1. Play a round.
-2. Open the live file: `G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx`
-3. Add the **Overall row** for the round.
-4. Add a **Hole row** for each hole played (even picked-up holes — mark `Pick Up = Y`).
-5. Commit the template to git after any structural changes (not data entry).
+| File | Path |
+|---|---|
+| Live data file (edit here) | `G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx` |
+| Base template (source control) | `C:\Users\craig.f\Home_Projects\Golf Round Recap\Golf Round Recap.xlsx` |
+| GitHub repo | https://github.com/C-Fowler-Tech/golf-round-recap |
 
-```bash
-cd "C:\Users\craig.f\Home_Projects\Golf Round Recap"
-git add .
-git commit -m "Update template structure"
-git push
-```
+> The **How To** tab in the workbook mirrors this section — both are kept in sync via source control.
 
 ---
 
-## Setup
+## Workflow — entering a new round
 
-To regenerate the workbook structure from scratch (WARNING: this resets data in both locations):
+1. Open the live file on Google Drive.
+2. Add the **Overall row** (Note Type = `Overall`, Hole = `0`) — date, course, tee colour, gross score, playing handicap, Course Rating, Slope, WHS Index, ball striking ratings, notes (tee time, weather, conditions, impressions).
+3. Add a **Hole row** per hole (Note Type = `Hole`) — par/distance/stroke index from Courses tab, FIR, GIR, score, strokes, putts, penalties, tee club, pick up, sentiment, notes.
+4. OneDrive AutoSave handles sync — no manual save needed.
+
+---
+
+## Workflow — changing the schema (adding/removing columns)
+
+> **Important:** The Drive file must have the new template copied to it *before* reloading data. If data is loaded into the old schema, values land in the wrong columns.
+
+1. Update `create_workbook.py` — add column to `ROUND_HEADERS`, `ROUND_COL_WIDTHS`, sample rows, data validations, and Guide/How To tab content.
+2. Run `create_workbook.py` — saves new template to repo only, does **not** touch the Drive file.
+3. **Copy template to Drive** before reloading any data:
+```bash
+python -c "import shutil; shutil.copy2('Golf Round Recap.xlsx', r'G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx')"
+```
+4. Run any data loading scripts — data will now align to the new schema.
+5. Update this README to keep the column guide in sync.
+6. Commit everything together in one commit.
+
+---
+
+## Setup — regenerating the template from scratch
+
+Saves to repo only. Does **not** overwrite the live Drive file.
 
 ```bash
 cd "C:\Users\craig.f\Home_Projects\Golf Round Recap"
 python create_workbook.py
 ```
 
-This saves the template to the repo and copies it to Google Drive.
+To also reset the Drive file (e.g. new season — **will wipe data**):
+```bash
+python -c "import shutil; shutil.copy2('Golf Round Recap.xlsx', r'G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx')"
+```
 
 ---
 

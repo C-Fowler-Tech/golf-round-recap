@@ -288,6 +288,102 @@ for tip in tips:
     r += 1
 
 
+# ============================================================
+# TAB 4 -- HOW TO  (operational workflow -- mirrors README)
+# ============================================================
+ws_h = wb.create_sheet("How To")
+ws_h.sheet_view.showGridLines = False
+ws_h.column_dimensions["A"].width = 6   # step number / bullet
+ws_h.column_dimensions["B"].width = 28  # heading / label
+ws_h.column_dimensions["C"].width = 70  # detail
+
+def ht_section(row, title):
+    ws_h.merge_cells(start_row=row, start_column=1, end_row=row, end_column=3)
+    cell = ws_h.cell(row=row, column=1, value=title)
+    cell.font = Font(color="FFFFFF", bold=True, name="Calibri", size=12)
+    cell.fill = SEC_FILL
+    ws_h.row_dimensions[row].height = 20
+
+def ht_row(row, step, label, detail=""):
+    ws_h.cell(row=row, column=1, value=step).font  = Font(bold=True, name="Calibri", size=11)
+    ws_h.cell(row=row, column=2, value=label).font = Font(bold=True, name="Calibri", size=11)
+    cell = ws_h.cell(row=row, column=3, value=detail)
+    cell.font = GUIDE_BODY
+    cell.alignment = Alignment(wrap_text=True)
+    if row % 2 == 0:
+        for c in range(1, 4):
+            ws_h.cell(row=row, column=c).fill = ALT_FILL
+    ws_h.row_dimensions[row].height = 28
+
+r = 1
+
+ht_section(r, "FILE LOCATIONS"); r += 1
+ht_row(r, "", "Live data file (edit here)",
+       r"G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"); r += 1
+ht_row(r, "", "Base template (source control)",
+       r"C:\Users\craig.f\Home_Projects\Golf Round Recap\Golf Round Recap.xlsx"); r += 1
+ht_row(r, "", "GitHub repo",
+       "https://github.com/C-Fowler-Tech/golf-round-recap"); r += 1
+
+r += 1
+ht_section(r, "ENTERING A NEW ROUND"); r += 1
+for step, label, detail in [
+    ("1", "Open live file",        r"G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"),
+    ("2", "Add Overall row",       "Note Type = Overall, Hole = 0. Fill date, course, tee colour, gross score, "
+                                   "playing handicap, course rating, slope, WHS index, ball striking ratings, notes "
+                                   "(tee time, weather, conditions, overall impressions)."),
+    ("3", "Add Hole rows",         "One row per hole. Note Type = Hole. Fill par, distance, stroke index from "
+                                   "the Courses tab. Fill FIR (par 4/5 only), GIR, score, strokes, putts, "
+                                   "penalties, tee club, pick up, sentiment, notes."),
+    ("4", "Save",                  "OneDrive AutoSave handles sync. No manual save needed."),
+    ("5", "Commit to git (optional)", "After a data entry session, commit the Drive file for backup history:\n"
+                                   "git add . && git commit -m 'Add round: Pupuke DD-Mon-YYYY' && git push"),
+]:
+    ht_row(r, step, label, detail); r += 1
+
+r += 1
+ht_section(r, "CHANGING THE SCHEMA (adding/removing columns)"); r += 1
+for step, label, detail in [
+    ("1", "Update create_workbook.py", "Add the new column to ROUND_HEADERS, ROUND_COL_WIDTHS, sample rows, "
+                                       "and data validations. Update Guide tab content if needed."),
+    ("2", "Run create_workbook.py",    "Saves new template to repo only -- does NOT touch the Drive file.\n"
+                                       "cd 'C:\\Users\\craig.f\\Home_Projects\\Golf Round Recap'\n"
+                                       "python create_workbook.py"),
+    ("3", "Copy template to Drive",    "MUST do this before reloading data, otherwise data lands in wrong columns.\n"
+                                       "python -c \"import shutil; shutil.copy2('Golf Round Recap.xlsx', "
+                                       r"r'G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx')\""),
+    ("4", "Reload data",               "Run any data loading scripts (e.g. load_round_YYYYMMDD.py) after "
+                                       "the template has been copied. Data will now align to the new schema."),
+    ("5", "Update README.md",          "Keep the column guide in README.md in sync with the workbook. "
+                                       "Both live in source control -- update together in the same commit."),
+    ("6", "Commit everything",         "git add . && git commit -m 'Schema: describe change' && git push"),
+]:
+    ht_row(r, step, label, detail); r += 1
+
+r += 1
+ht_section(r, "ADDING A NEW COURSE"); r += 1
+for step, label, detail in [
+    ("1", "Open Courses tab",      "Add 18 rows (one per hole) for the new course and tee colour."),
+    ("2", "Fill columns",          "Course name must match EXACTLY what you will type in the Rounds tab. "
+                                   "Fill Hole, Tee Colour, Par, Distance (m), Stroke Index. "
+                                   "On the TOTAL row, fill Course Rating and Slope."),
+    ("3", "Update create_workbook.py", "Add the course data to the script so it is included in future template resets."),
+]:
+    ht_row(r, step, label, detail); r += 1
+
+r += 1
+ht_section(r, "POWER BI"); r += 1
+for step, label, detail in [
+    ("", "Data source",          r"Connect to G:\My Drive\Project_Outputs\Golf Round Recap\Golf Round Recap.xlsx"),
+    ("", "Rounds grain",         "Filter Note Type = 'Overall' for round-level measures. "
+                                 "Filter Note Type = 'Hole' for hole-level measures."),
+    ("", "Sentiment (numeric)",  "Positive = 5, Neutral = 3, Negative = 1  (calculated column in PBI)"),
+    ("", "Ball striking (numeric)", "Great = 4, Good = 3, Average = 2, Poor = 1  (calculated column in PBI)"),
+    ("", "Handicap differential",  "Formula: (Score - Course Rating) x 113 / Slope"),
+]:
+    ht_row(r, step, label, detail); r += 1
+
+
 # ── Save ─────────────────────────────────────────────────────────────────────
 wb.save(TEMPLATE_PATH)
 print(f"Template saved : {TEMPLATE_PATH}")
