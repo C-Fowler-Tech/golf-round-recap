@@ -65,7 +65,7 @@ Add the **Overall row first** (Note Type = `Overall`, Hole = `0`):
 > **Date?** Date played.
 > **Course?** e.g. `Pupuke`
 > **Tee Colour?** e.g. `White` — determines which par/distance/stroke index to use from Courses tab. **Default: White if not specified.**
-> **Par / Distance?** Copy totals from the Courses tab for the tee colour played.
+> **Par / Distance?** Copy totals from the Courses tab for the tee colour played. **If playing less than 18 holes (e.g. 9 holes or a shortened round), set Par to the sum of the holes actually played — not the full course par.** This keeps scoring analysis accurate. Example: 6 holes played at Pupuke holes 1–6 = Par 23, not 70.
 > **Score / Strokes?** Your gross total for the round.
 > **Putts / Penalties?** Round totals.
 > **Playing Handicap?** Your handicap for this round.
